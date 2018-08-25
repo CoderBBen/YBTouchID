@@ -1,9 +1,9 @@
 //
 //  WebViewController.m
-//  TouchIDDemo
+//  YBTouchIDToolDemo
 //
-//  Created by Ben on 16/3/11.
-//  Copyright © 2016年 https://github.com/CoderBBen/YBTouchID.git. All rights reserved.
+//  Created by idbeny on 16/3/11.
+//  Copyright © 2016年 https://github.com/idbeny/YBTouchID.git. All rights reserved.
 //
 
 #import "WebViewController.h"
@@ -20,40 +20,54 @@
     [super viewDidLoad];
 
     self.title = @"WEB PAGE";
-    
     self.navigationController.navigationItem.hidesBackButton = YES;
-    _webView = [[UIWebView alloc] initWithFrame:self.view.frame];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://github.com"]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [_webView loadRequest:request];
-    _webView.scalesPageToFit = YES;
-    [self.view addSubview:_webView];
+    [self addSubViews];
+}
+
+#pragma mark - Private Method
+- (void)addSubViews {
+    [self.view addSubview:self.webView];
     
     UIButton *goForwardBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     goForwardBtn.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.3];
     goForwardBtn.frame = CGRectMake(kSCREEN_WIDTH-90, kSCREEN_HEIGHT-100, 90, 40);
     [goForwardBtn setTitle:@"goForward" forState:UIControlStateNormal];
-    [goForwardBtn addTarget:self action:@selector(webViewWithGoforwardButton) forControlEvents:UIControlEventTouchUpInside];
+    [goForwardBtn addTarget:self action:@selector(webViewForGoforward) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:goForwardBtn];
     
     UIButton *goBackBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     goBackBtn.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.3];
     goBackBtn.frame = CGRectMake(0, kSCREEN_HEIGHT-100, 90, 40);
     [goBackBtn setTitle:@"goBack" forState:UIControlStateNormal];
-    [goBackBtn addTarget:self action:@selector(webViewWithGoBackButton) forControlEvents:UIControlEventTouchUpInside];
+    [goBackBtn addTarget:self action:@selector(webViewForBack) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:goBackBtn];
 }
 
-- (void)webViewWithGoBackButton
-{
-    NSLog(@"goBack");
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    self.webView.frame = self.view.bounds;
+}
+
+//goBack
+- (void)webViewForBack {
     [self.webView goBack];
 }
 
-- (void)webViewWithGoforwardButton
-{
-    NSLog(@"goForward");
+//goForward
+- (void)webViewForGoforward {
     [self.webView goForward];
+}
+
+#pragma mark - Setter and Getter
+- (UIWebView *)webView {
+    if (!_webView) {
+        _webView = [[UIWebView alloc] init];
+        _webView.scalesPageToFit = YES;
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://idbeny.com"]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        [_webView loadRequest:request];
+    }
+    return _webView;
 }
 
 - (void)didReceiveMemoryWarning {
